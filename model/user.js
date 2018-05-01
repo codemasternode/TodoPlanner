@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const Schema = mongoose.Schema
+const bcrypt = require('bcrypt')
+const _ = require('lodash')
 
 var todo = new Schema({
     title: {
@@ -49,6 +51,29 @@ var userSchema = new Schema({
         maxlength: 20
     },
     todos: [todo]
+
+})
+
+userSchema.methods.toJSON = function () {
+    var user = this
+    var userObject = user.toObject()
+
+    return _.pick(userObject, ['email', 'name','lastname'])
+
+}
+
+userSchema.pre('save', function (next) {
+    var user = this
+    if (!user.isModified('password')) {
+        return next()
+    }
+
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(user.password, salt, (err, hash) => {
+            user.password = hash
+            next()
+        })
+    })
 
 })
 
