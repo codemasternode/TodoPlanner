@@ -1,0 +1,31 @@
+{
+  "name": "todoplannerbackend",
+  "version": "1.0.0",
+  "description": "Jest to strona stworzona do celów niekomeryjnych, mająca za zadanie planowanie zadań na najlbiższe dni",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javaxd123/TodoPlanner.git"
+  },
+  "keywords": [
+    "todo",
+    "planner"
+  ],
+  "author": "Marcin Warzybok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/javaxd123/TodoPlanner/issues"
+  },
+  "homepage": "https://github.com/javaxd123/TodoPlanner#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.0.17",
+    "validator": "^9.4.1"
+  }
+}
