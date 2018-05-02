@@ -79,7 +79,7 @@ userSchema.pre('save', function (next) {
     const content = `
     <h1>Email Verification</h1>
     <p>Aby aktywowac twoje konto kliknij tu: </p>
-    <a href="localhost:3000/verify/${user.emailVerification}">localhost:3000/verify/${user.emailVerification}</a>
+    <a href="http://localhost:3000/verify/${user.emailVerification}">localhost:3000/verify/${user.emailVerification}</a>
     `
     nodemailer.sendEmail('admin@planner.com', user.email, 'Weryfikacja adresu email', content)
 

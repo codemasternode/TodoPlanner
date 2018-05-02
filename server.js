@@ -15,7 +15,7 @@ app.get('/users', (req, res) => {
     })
 })
 
-app.post('/users',(req,res) => {
+app.post('/users', (req, res) => {
     var user = new User({
         email: req.body.email,
         password: req.body.password,
@@ -27,14 +27,27 @@ app.post('/users',(req,res) => {
 
     user.save().then((doc) => {
         res.send({
-            message: 'Success'
+            message: 'Brawo!!! Udało ci się zarejestrować nowe konto, na twojej skrzynce pocztowej znajduje się mail weryfikacyjny potrzebny do aktywowania konta'
         })
-    },(e) => {
+    }, (e) => {
         res.send({
             message: 'Email must be unique'
         })
     })
+})
 
+app.patch('/verify/:token', (req, res) => {
+    var token = req.params.token
+
+    User.findOneAndUpdate({ emailVerification: token }, { $set: { active: true } }, { new: true }).then((doc) => {
+        if (!doc) {
+            return res.status(404).send()
+        }
+
+        res.send(doc)
+    }).catch((e) => {
+        res.status(400).send()
+    })
 })
 
 app.listen(3000, () => {
