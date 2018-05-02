@@ -3,6 +3,8 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 const _ = require('lodash')
+const randomString = require('randomstring')
+const nodemailer = require('../helper/mailer')
 
 var todo = new Schema({
     title: {
@@ -33,6 +35,14 @@ var userSchema = new Schema({
             message: 'To nie jest prawidłowy email'
         }
     },
+    active: {
+        type: String,
+        default: false
+    },
+    emailVerification: {
+        type: String
+    }
+    ,
     password: {
         type: String,
         required: true,
@@ -58,12 +68,22 @@ userSchema.methods.toJSON = function () {
     var user = this
     var userObject = user.toObject()
 
-    return _.pick(userObject, ['email', 'name','lastname'])
+    return _.pick(userObject, ['email', 'name', 'lastname'])
 
 }
 
 userSchema.pre('save', function (next) {
     var user = this
+    user.emailVerification = randomString.generate(12)
+
+    const content = `
+    <h1>Email Verification</h1>
+    <p>Aby aktywowac twoje konto kliknij tu: </p>
+    <a href="localhost:3000/verify/${user.emailVerification}">localhost:3000/verify/${user.emailVerification}</a>
+    `
+    nodemailer.sendEmail('admin@planner.com', user.email, 'Weryfikacja adresu email', content)
+
+
     if (!user.isModified('password')) {
         return next()
     }
