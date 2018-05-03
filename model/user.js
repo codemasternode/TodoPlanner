@@ -60,8 +60,8 @@ var userSchema = new Schema({
         required: true,
         maxlength: 20
     },
-    todos: [todo]
-
+    todos: [todo],
+    admin: Boolean
 })
 
 userSchema.methods.toJSON = function () {
