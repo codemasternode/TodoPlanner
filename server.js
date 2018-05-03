@@ -6,6 +6,8 @@ const morgan = require('morgan')
 const app = express()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const keys = require('./helper/secretkey')
+const auth = require('./middleware/authenticate')
 
 //Umożliwia otrzymywanie informacji o żądaniach
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -14,6 +16,7 @@ app.use(bodyParser.json())
 //Morgan wyświetla żądania w konsoli
 app.use(morgan('dev'))
 
+app.use(auth.authenticate)
 
 app.post('/users', (req, res) => {
     var user = new User({
@@ -40,7 +43,6 @@ app.post('/users', (req, res) => {
 
 app.patch('/verify/:token', (req, res) => {
     var token = req.params.token
-
     User.findOneAndUpdate({ emailVerification: token }, { $set: { active: true } }, { new: true }).then((doc) => {
         if (!doc) {
             return res.status(404).send()
@@ -76,10 +78,11 @@ app.post('/auth', (req, res) => {
             if (hash) {
 
                 const payload = {
-                    admin: user.admin
+                    admin: user.admin,
+                    id: user._id
                 }
 
-                const token = jwt.sign(payload, 'supersecret', {
+                const token = jwt.sign(payload, keys.SECRET_KEY.toString(), {
                     expiresIn: 1440
                 })
 
@@ -89,7 +92,7 @@ app.post('/auth', (req, res) => {
                 })
 
             } else {
-                
+
                 return res.status(401).send({
                     success: false,
                     message: 'Nieprawiłowy email lub hasło'
