@@ -16,7 +16,6 @@ app.use(bodyParser.json())
 //Morgan wyświetla żądania w konsoli
 app.use(morgan('dev'))
 
-app.use(auth.authenticate)
 
 app.post('/users', (req, res) => {
     var user = new User({
@@ -103,6 +102,10 @@ app.post('/auth', (req, res) => {
     }).catch((e) => {
         res.status(401).send()
     })
+})
+
+app.delete('/users/:id', auth.authenticateAdmin, (req, res) => {
+
 })
 
 app.listen(3000, () => {
