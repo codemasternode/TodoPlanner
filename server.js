@@ -35,7 +35,7 @@ app.post('/users', (req, res) => {
     }, (e) => {
         res.send({
             success: false,
-            message: 'Email must be unique'
+            message: 'Użytkownik z tym adresem email został już zarejestrowany'
         })
     })
 })
@@ -104,7 +104,39 @@ app.post('/auth', (req, res) => {
     })
 })
 
-app.delete('/users/:id', auth.authenticateAdmin, (req, res) => {
+app.delete('/usersDelete/:id', auth.authenticateAdmin, (req, res) => {
+    User.findOneAndRemove({ _id: req.params.id }).then((user) => {
+        return res.send({
+            message: 'Użytkownik został usunięty',
+            body: user
+        })
+    }).catch((e) => {
+        return res.send({
+            message: 'Użytkownik nie został usunięty',
+            error: e
+        })
+    })
+})
+
+app.delete('/users/me', auth.authenticate, (req, res) => {
+    const token = req.header('x-auth') || req.body.token
+    console.log(token + ' to jest token')
+    try {
+        decoded = jwt.verify(token, keys.SECRET_KEY.toString())
+    } catch (e) {
+        return res.status(401).send()
+    }
+
+    User.findOneAndRemove({ _id: decoded.id }).then((user) => {
+        return res.send({
+            message: "Użytkownik został ususnięty",
+            body: user
+        })
+    }).catch((e) => {
+        return res.send({
+            message: 'Użytkownik nie został usunięty'
+        })
+    })
 
 })
 
