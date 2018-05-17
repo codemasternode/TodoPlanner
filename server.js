@@ -16,6 +16,11 @@ app.use(bodyParser.json())
 //Morgan wyświetla żądania w konsoli
 app.use(morgan('dev'))
 
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.post('/users', (req, res) => {
     var user = new User({
@@ -38,6 +43,24 @@ app.post('/users', (req, res) => {
             message: 'Użytkownik z tym adresem email został już zarejestrowany'
         })
     })
+})
+
+app.get('/verify/me', (req, res) => {
+    let token = req.header('x-auth')
+    try {
+        var encoded = jwt.decode(token, keys.SECRET_KEY.key.toString())
+    } catch (error) {
+        return res.status(400).send();
+    }
+
+    User.findById(encoded.id, (err, doc) => {
+        if (err) {
+            return res.status(400).send()
+        }
+        return res.send(doc);
+    })
+
+
 })
 
 app.patch('/verify/:token', (req, res) => {
@@ -140,6 +163,6 @@ app.delete('/users/me', auth.authenticate, (req, res) => {
 
 })
 
-app.listen(3000, () => {
-    console.log('Started on port 3000')
+app.listen(8080, () => {
+    console.log('Started on port 8080')
 })

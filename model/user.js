@@ -79,12 +79,12 @@ userSchema.pre('save', function (next) {
     var user = this
     user.emailVerification = randomString.generate(12)
 
-    const content = `
-    <h1>Email Verification</h1>
-    <p>Aby aktywowac twoje konto kliknij tu: </p>
-    <a href="http://localhost:3000/verify/${user.emailVerification}">localhost:3000/verify/${user.emailVerification}</a>
-    `
-    nodemailer.sendEmail('admin@planner.com', user.email, 'Weryfikacja adresu email', content)
+    // const content = `
+    // <h1>Email Verification</h1>
+    // <p>Aby aktywowac twoje konto kliknij tu: </p>
+    // <a href="http://localhost:3000/verify/${user.emailVerification}">localhost:3000/verify/${user.emailVerification}</a>
+    // `
+    // nodemailer.sendEmail('admin@planner.com', user.email, 'Weryfikacja adresu email', content)
 
 
     if (!user.isModified('password')) {
