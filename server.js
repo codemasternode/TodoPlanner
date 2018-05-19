@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const keys = require('./helper/secretkey')
 const auth = require('./middleware/authenticate')
+const cors = require('cors')
 
 //Umożliwia otrzymywanie informacji o żądaniach
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -16,11 +17,10 @@ app.use(bodyParser.json())
 //Morgan wyświetla żądania w konsoli
 app.use(morgan('dev'))
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+app.use(cors({
+    origin: 'http://localhost:3000',
+    exposedHeaders: ['x-auth']
+}));
 
 app.post('/users', (req, res) => {
     var user = new User({
@@ -47,6 +47,7 @@ app.post('/users', (req, res) => {
 
 app.get('/verify/me', (req, res) => {
     let token = req.header('x-auth')
+    console.log(token + 'token')
     try {
         var encoded = jwt.decode(token, keys.SECRET_KEY.key.toString())
     } catch (error) {
