@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken')
 const keys = require('./helper/secretkey')
 const auth = require('./middleware/authenticate')
 const cors = require('cors')
-
+const _ = require('lodash')
 //Umożliwia otrzymywanie informacji o żądaniach
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -30,14 +30,16 @@ app.post('/users', (req, res) => {
         lastname: req.body.lastname
     })
 
-    console.log()
+
 
     user.save().then((doc) => {
+
         res.send({
             success: true,
             message: 'Brawo!!! Udało ci się zarejestrować nowe konto, na twojej skrzynce pocztowej znajduje się mail weryfikacyjny potrzebny do aktywowania konta'
         })
     }, (e) => {
+        console.log(e)
         res.send({
             success: false,
             message: 'Użytkownik z tym adresem email został już zarejestrowany'
@@ -47,7 +49,6 @@ app.post('/users', (req, res) => {
 
 app.get('/verify/me', (req, res) => {
     let token = req.header('x-auth')
-    console.log(token + 'token')
     try {
         var encoded = jwt.decode(token, keys.SECRET_KEY.key.toString())
     } catch (error) {
@@ -161,7 +162,32 @@ app.delete('/users/me', auth.authenticate, (req, res) => {
             message: 'Użytkownik nie został usunięty'
         })
     })
+})
 
+
+app.post('/newTodo', auth.authenticate, (req, res) => {
+    const token = req.header('x-auth')
+    const todo = req.body
+    
+    console.log(todo)
+    try {
+        var decoded = jwt.decode(token, keys.SECRET_KEY)
+    } catch (error) {
+        return res.status(401).send()
+    }
+
+    User.findByIdAndUpdate({ _id: decoded.id },
+        { $push: { todos: todo } },
+        (err, success) => {
+            if (err) {
+                console.log(err)
+                return res.status(403).send()
+            } else {
+                return res.send(success)
+            }
+
+        }
+    )
 })
 
 app.listen(8080, () => {

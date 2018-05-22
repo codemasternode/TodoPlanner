@@ -14,13 +14,16 @@ var todo = new Schema({
     description: {
         type: String
     },
-    startAt: {
+    startsAt: {
         type: Date,
         required: true
     },
     endAt: {
         type: Date,
         required: true
+    },
+    author: {
+        type: String
     }
 })
 
