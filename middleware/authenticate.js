@@ -23,8 +23,6 @@ const authenticate = (req, res, next) => {
 const authenticateAdmin = (req, res, next) => {
     const token = req.header('x-auth') || req.body.token
     let decoded
-
-    console.log(token + 'to jest token')
     try {
         decoded = jwt.verify(token, key.SECRET_KEY.toString())
     } catch (error) {
@@ -38,8 +36,6 @@ const authenticateAdmin = (req, res, next) => {
             decoded
         })
     }
-
-
     next()
 }
 

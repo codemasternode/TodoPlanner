@@ -6,26 +6,47 @@ const _ = require('lodash')
 const randomString = require('randomstring')
 const nodemailer = require('../helper/mailer')
 
-var todo = new Schema({
+
+var dayTodo = new Schema({
     title: {
         type: String,
         required: true
     },
-    description: {
-        type: String
-    },
     startsAt: {
-        type: Date,
-        required: true
+        type: String
     },
     endAt: {
-        type: Date,
-        required: true
-    },
-    author: {
         type: String
+    },
+    dayOfWeek: {
+        type: Number,
+        required: true
     }
 })
+
+var monthTodo = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    when: {
+        type: String,
+        required: true
+    }
+})
+
+var longTodo = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    when: {
+        type: String,
+        required: true
+    }
+})
+
+
 
 var userSchema = new Schema({
     email: {
@@ -63,7 +84,9 @@ var userSchema = new Schema({
         required: true,
         maxlength: 20
     },
-    todos: [todo],
+    monthTodos: [monthTodo],
+    longTodos: [longTodo],
+    dayTodos: [dayTodo],
     admin: {
         type: Boolean,
         default: false

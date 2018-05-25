@@ -10,6 +10,9 @@ const keys = require('./helper/secretkey')
 const auth = require('./middleware/authenticate')
 const cors = require('cors')
 const _ = require('lodash')
+
+const checkToken = require('./utilites/todoAuth')
+
 //Umożliwia otrzymywanie informacji o żądaniach
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -165,19 +168,13 @@ app.delete('/users/me', auth.authenticate, (req, res) => {
 })
 
 
-app.post('/newTodo', auth.authenticate, (req, res) => {
-    const token = req.header('x-auth')
-    const todo = req.body
+app.post('/newDayTodo', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
     
+    const todo = req.body
     console.log(todo)
-    try {
-        var decoded = jwt.decode(token, keys.SECRET_KEY)
-    } catch (error) {
-        return res.status(401).send()
-    }
-
     User.findByIdAndUpdate({ _id: decoded.id },
-        { $push: { todos: todo } },
+        { $push: { dayTodos: todo } },
         (err, success) => {
             if (err) {
                 console.log(err)
@@ -189,6 +186,41 @@ app.post('/newTodo', auth.authenticate, (req, res) => {
         }
     )
 })
+
+app.post('/newMonthTodo', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+    const todo = req.body
+    User.findByIdAndUpdate({ _id: decoded.id },
+        { $push: { monthTodos: todo } },
+        (err, success) => {
+            if (err) {
+                console.log(err)
+                return res.status(403).send()
+            } else {
+                return res.send(success)
+            }
+
+        }
+    )
+})
+
+app.post('/newLongTodo', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+    const todo = req.body
+    User.findByIdAndUpdate({ _id: decoded.id },
+        { $push: { longTodos: todo } },
+        (err, success) => {
+            if (err) {
+                console.log(err)
+                return res.status(403).send()
+            } else {
+                return res.send(success)
+            }
+
+        }
+    )
+})
+
 
 app.listen(8080, () => {
     console.log('Started on port 8080')
