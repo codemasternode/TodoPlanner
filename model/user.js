@@ -97,7 +97,7 @@ userSchema.methods.toJSON = function () {
     var user = this
     var userObject = user.toObject()
 
-    return _.pick(userObject, ['email', 'name', 'lastname'])
+    return _.pick(userObject, ['email', 'name', 'lastname','dayTodos','longTodos','monthTodos'])
 
 }
 

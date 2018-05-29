@@ -170,7 +170,7 @@ app.delete('/users/me', auth.authenticate, (req, res) => {
 
 app.post('/newDayTodo', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
-    
+
     const todo = req.body
     console.log(todo)
     User.findByIdAndUpdate({ _id: decoded.id },
@@ -221,6 +221,44 @@ app.post('/newLongTodo', auth.authenticate, (req, res) => {
     )
 })
 
+app.get('/allDayTodos', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+
+    User.findById({ _id: decoded.id }, (err, success) => {
+        console.log(success)
+        if (err) {
+            return res.status(403).send()
+        } else {
+            return res.send(success.dayTodos)
+        }
+    })
+})
+
+app.get('/allMonthTodos', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+
+    User.findById({ _id: decoded.id }, (err, success) => {
+        console.log(success)
+        if (err) {
+            return res.status(403).send()
+        } else {
+            return res.send(success.monthTodos)
+        }
+    })
+})
+
+app.get('/allLongTodos', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+
+    User.findById({ _id: decoded.id }, (err, success) => {
+        console.log(success)
+        if (err) {
+            return res.status(403).send()
+        } else {
+            return res.send(success.longTodos)
+        }
+    })
+})
 
 app.listen(8080, () => {
     console.log('Started on port 8080')
