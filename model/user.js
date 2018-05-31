@@ -13,12 +13,23 @@ var dayTodo = new Schema({
         required: true
     },
     startsAt: {
-        type: String
+        type: String,
+        trim: true
     },
     endAt: {
-        type: String
+        type: String,
+        trim: true
     },
-    dayOfWeek: {
+    dayOfMonth: {
+        type: Number,
+        required: true
+    },
+    month: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    year: {
         type: Number,
         required: true
     }
