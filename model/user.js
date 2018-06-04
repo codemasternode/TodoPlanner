@@ -25,7 +25,7 @@ var dayTodo = new Schema({
         required: true
     },
     month: {
-        type: String,
+        type: Number,
         required: true,
         trim: true
     },
@@ -108,8 +108,7 @@ userSchema.methods.toJSON = function () {
     var user = this
     var userObject = user.toObject()
 
-    return _.pick(userObject, ['email', 'name', 'lastname','dayTodos','longTodos','monthTodos'])
-
+    return _.pick(userObject, ['_id', 'email', 'name', 'lastname', 'dayTodos', 'longTodos', 'monthTodos'])
 }
 
 userSchema.pre('save', function (next) {

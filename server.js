@@ -110,7 +110,7 @@ app.post('/auth', (req, res) => {
                 }
 
                 const token = jwt.sign(payload, keys.SECRET_KEY.toString(), {
-                    expiresIn: 1440
+                    expiresIn: "2 days"
                 })
 
                 return res.send({
@@ -187,6 +187,23 @@ app.post('/newDayTodo', auth.authenticate, (req, res) => {
     )
 })
 
+app.delete('/deleteDayTodo/:id', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+    const todoId = req.params.id
+    User.update({ _id: decoded.id },
+        { $pull: { dayTodos: { _id: todoId } } },
+        { safe: true },
+        (err, obj) => {
+            if (err) {
+                console.log(err)
+                return res.status(401).send()
+            } else {
+                console.log(obj)
+                return res.send(obj)
+            }
+        })
+})
+
 app.post('/newMonthTodo', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
     const todo = req.body
@@ -225,7 +242,6 @@ app.get('/allDayTodos', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
 
     User.findById({ _id: decoded.id }, (err, success) => {
-        console.log(success)
         if (err) {
             return res.status(403).send()
         } else {
@@ -233,6 +249,8 @@ app.get('/allDayTodos', auth.authenticate, (req, res) => {
         }
     })
 })
+
+
 
 app.get('/allMonthTodos', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
