@@ -4,8 +4,6 @@ const User = require('../model/user')
 
 const authenticate = (req, res, next) => {
     const token = req.header('x-auth') || req.body.token
-    console.log(token + ' to jest token')
-    // 
     jwt.verify(token, key.SECRET_KEY.toString(), (err, decoded) => {
         if (err) {
             console.log(err)

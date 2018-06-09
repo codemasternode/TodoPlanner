@@ -40,8 +40,16 @@ var monthTodo = new Schema({
         type: String,
         required: true
     },
-    when: {
-        type: String,
+    week: {
+        type: Number,
+        required: true
+    },
+    month: {
+        type: Number,
+        required: true
+    },
+    year:{
+        type: Number,
         required: true
     }
 })

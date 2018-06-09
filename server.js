@@ -170,9 +170,8 @@ app.delete('/users/me', auth.authenticate, (req, res) => {
 
 app.post('/newDayTodo', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
-
     const todo = req.body
-    console.log(todo)
+    todo.dayOfMonth = todo.day
     User.findByIdAndUpdate({ _id: decoded.id },
         { $push: { dayTodos: todo } },
         (err, success) => {
@@ -192,6 +191,24 @@ app.delete('/deleteDayTodo/:id', auth.authenticate, (req, res) => {
     const todoId = req.params.id
     User.update({ _id: decoded.id },
         { $pull: { dayTodos: { _id: todoId } } },
+        { safe: true },
+        (err, obj) => {
+            if (err) {
+                console.log(err)
+                return res.status(401).send()
+            } else {
+                console.log(obj)
+                return res.send(obj)
+            }
+        })
+})
+
+app.delete('/deleteMonthTodo/:id', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+    const todoId = req.params.id
+
+    User.update({ _id: decoded.id },
+        { $pull: { monthTodos: { _id: todoId } } },
         { safe: true },
         (err, obj) => {
             if (err) {
@@ -256,7 +273,6 @@ app.get('/allMonthTodos', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
 
     User.findById({ _id: decoded.id }, (err, success) => {
-        console.log(success)
         if (err) {
             return res.status(403).send()
         } else {
