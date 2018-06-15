@@ -109,7 +109,7 @@ app.post('/auth', (req, res) => {
                     id: user._id
                 }
 
-                const token = jwt.sign(payload, keys.SECRET_KEY.toString(),{})
+                const token = jwt.sign(payload, keys.SECRET_KEY.toString(), {})
 
                 return res.send({
                     success: true,
@@ -289,6 +289,18 @@ app.get('/allLongTodos', auth.authenticate, (req, res) => {
         } else {
             return res.send(success.longTodos)
         }
+    })
+})
+
+app.put('/updateLongTodo', auth.authenticate, (req, res) => {
+    const decoded = checkToken.getDecoded(req.header('x-auth'))
+    console.log(req.body)
+    User.updateMany({"longTodos.when": req.body.when }, {$set: {"longTodos.$.title": req.body.title}}, (err, doc) => {
+        if(err) {
+            return res.status(403).send()
+        }
+        console.log(doc)
+        return res.send(doc)
     })
 })
 
