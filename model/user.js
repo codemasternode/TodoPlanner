@@ -48,7 +48,7 @@ var monthTodo = new Schema({
         type: Number,
         required: true
     },
-    year:{
+    year: {
         type: Number,
         required: true
     }
@@ -60,7 +60,7 @@ var longTodo = new Schema({
         required: true
     },
     when: {
-        type: String,
+        type: Number,
         required: true
     }
 })
@@ -130,6 +130,13 @@ userSchema.pre('save', function (next) {
     // `
     // nodemailer.sendEmail('admin@planner.com', user.email, 'Weryfikacja adresu email', content)
 
+    for (let i = 0; i < 12; i++) {
+        user.longTodos.push({
+            _id: mongoose.Types.ObjectId(),
+            when: i,
+            title: ""
+        })
+    }
 
     if (!user.isModified('password')) {
         return next()

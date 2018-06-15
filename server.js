@@ -109,9 +109,7 @@ app.post('/auth', (req, res) => {
                     id: user._id
                 }
 
-                const token = jwt.sign(payload, keys.SECRET_KEY.toString(), {
-                    expiresIn: "2 days"
-                })
+                const token = jwt.sign(payload, keys.SECRET_KEY.toString(),{})
 
                 return res.send({
                     success: true,
