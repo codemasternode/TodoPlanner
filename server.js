@@ -1,3 +1,4 @@
+const ObjectId = require('mongodb').ObjectID
 const express = require('express')
 const bodyParser = require('body-parser')
 const { mongoose } = require('./db/mongoose')
@@ -283,7 +284,6 @@ app.get('/allLongTodos', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
 
     User.findById({ _id: decoded.id }, (err, success) => {
-        console.log(success)
         if (err) {
             return res.status(403).send()
         } else {
@@ -294,16 +294,18 @@ app.get('/allLongTodos', auth.authenticate, (req, res) => {
 
 app.put('/updateLongTodo', auth.authenticate, (req, res) => {
     const decoded = checkToken.getDecoded(req.header('x-auth'))
-    console.log(req.body)
-    User.updateMany({"longTodos.when": req.body.when }, {$set: {"longTodos.$.title": req.body.title}}, (err, doc) => {
-        if(err) {
+    const email = req.body.email
+
+    User.updateOne({ email, "longTodos.when": req.body.when }, { $set: { "longTodos.$.title": req.body.title } }, (err, raw) => {
+        if (err) {
             return res.status(403).send()
         }
-        console.log(doc)
-        return res.send(doc)
+        return res.send(raw)
     })
 })
 
-app.listen(8080, () => {
-    console.log('Started on port 8080')
+const port = process.env.PORT || 8080
+
+app.listen(port, () => {
+    console.log(`Started on ${port}`)
 })

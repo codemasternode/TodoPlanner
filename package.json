@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -28,10 +28,15 @@
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.1",
     "lodash": "^4.17.10",
+    "mongodb": "^3.0.10",
     "mongoose": "^5.0.17",
     "morgan": "^1.9.0",
     "nodemailer": "^4.6.4",
     "randomstring": "^1.1.5",
     "validator": "^9.4.1"
+  },
+  "engines": {
+    "node": "8.11.2",
+    "npm": "6.1.0"
   }
 }
