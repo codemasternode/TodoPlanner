@@ -13,6 +13,8 @@ const cors = require('cors')
 const _ = require('lodash')
 
 const checkToken = require('./utilites/todoAuth')
+const port = process.env.PORT || 8080
+
 
 //Umożliwia otrzymywanie informacji o żądaniach
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -301,7 +303,7 @@ app.put('/updateLongTodo', auth.authenticate, (req, res) => {
     })
 })
 
-const port = process.env.PORT || 8080
+
 
 app.listen(port, () => {
     console.log(`Started on ${port}`)
