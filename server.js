@@ -21,10 +21,7 @@ app.use(bodyParser.json())
 //Morgan wyświetla żądania w konsoli
 app.use(morgan('dev'))
 
-app.use(cors({
-    origin: 'http://localhost:3000',
-    exposedHeaders: ['x-auth']
-}));
+app.use(cors({exposedHeaders: ['x-auth']}));
 
 app.post('/users', (req, res) => {
     var user = new User({
